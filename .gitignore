@@ -32,3 +32,6 @@ dist/
 .DS_Store
 .idea/
 .vscode/
+
+# Local Codex notes and machine-specific workflow preferences
+.codex/
