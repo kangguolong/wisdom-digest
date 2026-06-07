@@ -1,0 +1,40 @@
+name: Wisdom Digest
+
+on:
+  schedule:
+    - cron: "0 20,21 * * *"
+    - cron: "0 0,1 * * *"
+    - cron: "0 5,6 * * *"
+  workflow_dispatch:
+    inputs:
+      digest_slot:
+        description: "Optional slot override: morning, noon, or evening"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DEFAULT_TIMEZONE: Pacific/Auckland
+      DRY_RUN: "true"
+      WRITE_DRY_RUN_LOGS: "false"
+      DIGEST_SLOT: ${{ inputs.digest_slot }}
+      LOG_LEVEL: INFO
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Run tests
+        run: PYTHONPATH=src python -m pytest
