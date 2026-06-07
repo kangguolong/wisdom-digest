@@ -49,6 +49,7 @@ Local development:
 - Use `.env` locally.
 - Commit only `.env.example`.
 - Default `DRY_RUN=true` in `.env.example`.
+- Default `WRITE_DRY_RUN_LOGS=false` in `.env.example`.
 
 GitHub Actions:
 
@@ -63,6 +64,7 @@ Workflow rules:
 - Use least necessary permissions.
 - Avoid printing full payloads.
 - Use `DRY_RUN=true` for manual test runs until explicitly changed.
+- Keep `WRITE_DRY_RUN_LOGS=false` unless dry-run audit records are intentionally needed.
 - Use pinned major versions for official actions where practical, e.g. `actions/checkout@v4`.
 - Do not upload artifacts containing logs with private data.
 
@@ -141,9 +143,9 @@ Requirements:
 - Select wisdom items.
 - Render email.
 - Do not send email.
-- Write delivery log with status `dry_run` only if configured to do so.
+- Write delivery log with status `dry_run` only if `WRITE_DRY_RUN_LOGS=true`.
 
-The application should default safely in local examples.
+The application should default safely in local examples. Dry-run logs must not affect production selection history unless explicitly configured in a future version.
 
 ## 10. Test Data Rules
 

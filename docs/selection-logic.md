@@ -72,7 +72,7 @@ DeliveryLog(
 )
 ```
 
-Only `sent` and `dry_run` logs should normally count as delivery history for repetition control. Failed attempts should not count as successful delivery.
+Only `sent` logs count as production delivery history for repetition control by default. Failed attempts must not count as successful delivery. Dry-run logs may exist when explicitly configured, but they must remain distinguishable from `sent` logs and must not affect production selection unless a future configuration explicitly opts into that behavior.
 
 ## 3. Recipient Eligibility
 
@@ -97,11 +97,11 @@ A wisdom item is eligible when:
 
 ## 5. Repeat Control
 
-Repeat control is recipient-specific.
+Repeat control is recipient-specific and derived from Delivery Logs.
 
 For a candidate item and recipient:
 
-1. Find the most recent successful log for the same recipient and item.
+1. Find the most recent successful `sent` log for the same recipient and item.
 2. If no log exists, item is not repeated.
 3. If last sent date is within `min_repeat_days`, item is ineligible.
 4. If `min_repeat_days` is missing, default to 90.
@@ -128,7 +128,7 @@ recent_soft_penalty =
   0 otherwise
 ```
 
-The hard repeat filter should normally prevent same-item repetition within `min_repeat_days`. The soft penalty is still useful when `min_repeat_days` is low or when future rules use category-level repetition.
+The hard repeat filter should normally prevent same-item repetition within `min_repeat_days`. The soft penalty is still useful when `min_repeat_days` is low or when future rules use category-level repetition. `sent_count_to_recipient` and `recent_soft_penalty` should be calculated from successful production delivery history by default.
 
 ## 7. Tag Matching
 

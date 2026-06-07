@@ -50,15 +50,16 @@ V1 does not include:
 
 ## Schedule
 
-Default delivery times are Singapore time:
+Default delivery times are New Zealand time using the IANA timezone `Pacific/Auckland`.
+New Zealand observes daylight saving time, so GitHub Actions should run at both possible UTC candidate times and let the application confirm the current local slot.
 
-| Slot | Asia/Singapore | UTC cron |
-|---|---:|---:|
-| morning | 09:00 | `0 1 * * *` |
-| noon | 13:00 | `0 5 * * *` |
-| evening | 18:00 | `0 10 * * *` |
+| Slot | Pacific/Auckland | NZST UTC+12 | NZDT UTC+13 | Candidate UTC cron |
+|---|---:|---:|---:|---:|
+| morning | 09:00 | 21:00 previous day | 20:00 previous day | `0 20,21 * * *` |
+| noon | 13:00 | 01:00 same day | 00:00 same day | `0 0,1 * * *` |
+| evening | 18:00 | 06:00 same day | 05:00 same day | `0 5,6 * * *` |
 
-GitHub Actions cron uses UTC.
+GitHub Actions cron uses UTC. Candidate runs that do not match the current Auckland local slot should exit cleanly without sending email or writing delivery logs.
 
 ## Documentation
 
@@ -97,6 +98,7 @@ For GitHub Actions, configure these as GitHub Secrets.
 ## Safety Defaults
 
 - `DRY_RUN=true` should be used for local setup and first test runs.
+- `WRITE_DRY_RUN_LOGS=false` should be the default so local tests do not affect production selection history.
 - Real recipient emails should live only in Notion, not in the repository.
 - Real Notion database IDs should live only in local `.env` or GitHub Secrets.
 - Logs should mask recipient emails.

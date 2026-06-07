@@ -39,7 +39,7 @@ V1 must implement:
 - Notion-based delivery logs.
 - Multi-recipient email delivery.
 - Recipient-level subscription slots.
-- Scheduled runs at morning, noon, and evening Singapore time.
+- Scheduled runs at morning, noon, and evening New Zealand time using `Pacific/Auckland`.
 - Deterministic selection logic.
 - HTML email rendering with plain-text fallback.
 - Gmail SMTP delivery using app password.
@@ -69,18 +69,20 @@ Do not implement in V1:
 
 ## 5. Runtime Slots
 
-The system supports three delivery slots:
+The system supports three delivery slots in `Pacific/Auckland` local time:
 
-| Slot | Asia/Singapore | UTC cron |
-|---|---:|---:|
-| morning | 09:00 | `0 1 * * *` |
-| noon | 13:00 | `0 5 * * *` |
-| evening | 18:00 | `0 10 * * *` |
+| Slot | Pacific/Auckland | NZST UTC+12 | NZDT UTC+13 | Candidate UTC cron |
+|---|---:|---:|---:|---:|
+| morning | 09:00 | 21:00 previous day | 20:00 previous day | `0 20,21 * * *` |
+| noon | 13:00 | 01:00 same day | 00:00 same day | `0 0,1 * * *` |
+| evening | 18:00 | 06:00 same day | 05:00 same day | `0 5,6 * * *` |
 
-GitHub Actions cron runs in UTC. The application must support either:
+GitHub Actions cron runs in UTC. Because Auckland switches between NZST and NZDT, the workflow must run at the candidate UTC hours above. The application must support either:
 
 1. an explicit `DIGEST_SLOT` environment variable; or
-2. automatic slot inference from current UTC hour.
+2. automatic slot inference from the current `Pacific/Auckland` local time.
+
+Candidate cron runs that do not map to a real local slot must exit cleanly without sending email or writing delivery logs.
 
 Manual runs through `workflow_dispatch` should support setting `DIGEST_SLOT` when possible.
 
@@ -95,8 +97,9 @@ NOTION_RECIPIENTS_DATABASE_ID=
 NOTION_DELIVERY_LOGS_DATABASE_ID=
 GMAIL_USER=
 GMAIL_APP_PASSWORD=
-DEFAULT_TIMEZONE=Asia/Singapore
+DEFAULT_TIMEZONE=Pacific/Auckland
 DRY_RUN=true
+WRITE_DRY_RUN_LOGS=false
 ```
 
 Optional variables:
@@ -112,6 +115,7 @@ Rules:
 - GitHub Actions must read secrets from GitHub Secrets.
 - No real API keys, passwords, Notion IDs, or recipient emails may be committed.
 - `DRY_RUN` should default to `true` in local examples.
+- `WRITE_DRY_RUN_LOGS` should default to `false` so dry-run tests do not affect production selection history.
 
 ## 7. Data Model Summary
 
@@ -206,6 +210,7 @@ Minimum tests:
 - Notion parser fails clearly on required schema mismatch.
 - Email template renders HTML and plain text without secrets.
 - Dry-run mode does not send email.
+- Slot inference handles both NZST and NZDT candidate UTC times.
 
 ## 13. Definition of Done
 
@@ -214,7 +219,7 @@ V1 is complete when:
 - GitHub Actions can run on schedule and manually.
 - A dry-run run completes without sending email.
 - A real run can send one HTML email per eligible active recipient.
-- Delivery Logs are written for sent and failed attempts.
+- Delivery Logs are written for sent and failed attempts. Dry-run logs are written only when explicitly configured and must not affect production selection by default.
 - Selection tests pass.
 - No secrets or real personal data are committed.
 - README explains setup clearly.

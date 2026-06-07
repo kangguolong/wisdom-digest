@@ -103,6 +103,7 @@ Requirements:
 - Read Recipients database.
 - Read recent Delivery Logs for each recipient.
 - Write Delivery Logs after send attempts.
+- Keep dry-run log writes optional and disabled by default with `WRITE_DRY_RUN_LOGS=false`.
 - Parse Notion property types safely.
 - Fail clearly on schema mismatch.
 - Avoid logging sensitive data.
@@ -127,6 +128,7 @@ Requirements:
 - Use Gmail SMTP with app password from environment variables.
 - Support DRY_RUN mode.
 - Do not send email when DRY_RUN=true.
+- Do not write dry-run delivery logs unless WRITE_DRY_RUN_LOGS=true.
 - Mask recipient emails in logs.
 - Add tests for template rendering.
 - Keep EmailProvider abstraction simple so provider can be replaced later.
@@ -142,19 +144,21 @@ Implement Phase 5: main workflow and GitHub Actions.
 Use docs/v1-build-spec.md as the source of truth.
 
 Requirements:
-- Determine slot from environment variable or current UTC time.
+- Determine slot from environment variable or current `Pacific/Auckland` local time.
 - Support morning/noon/evening.
 - Query active recipients.
 - Select one item per eligible recipient.
 - Render email.
 - Send email unless DRY_RUN=true.
-- Write delivery log with sent or failed status.
-- Ensure GitHub Actions runs at:
-  - 01:00 UTC for 09:00 Asia/Singapore
-  - 05:00 UTC for 13:00 Asia/Singapore
-  - 10:00 UTC for 18:00 Asia/Singapore
+- Write delivery log with sent or failed status. Dry-run logs are written only when WRITE_DRY_RUN_LOGS=true.
+- Ensure GitHub Actions runs at DST-safe candidate UTC times:
+  - `0 20,21 * * *` for 09:00 Pacific/Auckland
+  - `0 0,1 * * *` for 13:00 Pacific/Auckland
+  - `0 5,6 * * *` for 18:00 Pacific/Auckland
+- Candidate cron runs that do not match the current Auckland local slot must exit cleanly without sending or logging.
 - Add workflow_dispatch for manual testing.
 - Use GitHub Secrets for all sensitive environment variables.
+- Add tests for slot inference around NZST and NZDT.
 
 Do not include real secrets.
 Do not include real recipient data.
@@ -173,6 +177,7 @@ Check:
 - Logs mask recipient emails.
 - GitHub Actions uses secrets only.
 - DRY_RUN defaults safely.
+- WRITE_DRY_RUN_LOGS defaults safely.
 - Tests use fake data only.
 - README does not instruct users to commit secrets.
 - Scope matches docs/v1-build-spec.md.

@@ -63,7 +63,7 @@ Purpose: stores people who can receive digest emails.
 |---|---|---:|---|
 | `Preference Tags` | Multi-select | No | Tags the recipient prefers. |
 | `Excluded Tags` | Multi-select | No | Tags the recipient should not receive. |
-| `Timezone` | Rich text | No | Defaults to `Asia/Singapore` in V1. |
+| `Timezone` | Rich text | No | Defaults to `Pacific/Auckland` in V1. |
 | `Personal Note` | Rich text | No | Internal note. Not used in V1 selection unless explicitly implemented later. |
 | `Created At` | Created time | No | Notion-created timestamp. |
 
@@ -119,6 +119,8 @@ Purpose: stores one event per attempted digest delivery.
 - Delivery history must be event-based.
 - Do not store recipient-specific sent counts on Wisdom Items.
 - The selector should derive recipient-specific send history from Delivery Logs.
+- Delivery Logs may grow over time; V1 should query only the recent history window needed for repeat control and scoring.
+- Dry-run logs should be optional and disabled by default. If written, they must use status `dry_run` and must not affect production selection history by default.
 
 ## 4. Schema Compatibility Rules
 

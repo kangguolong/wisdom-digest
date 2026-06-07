@@ -52,11 +52,20 @@ Keep changes scoped to the current phase unless the user explicitly asks to comb
 - Keep tests offline by default; mock Notion and SMTP.
 - Add dependencies only when they directly support V1. Likely dependencies: `notion-client`, `jinja2`, `python-dotenv`, `pytest`, and optionally `ruff`.
 
+## Scheduling Rules
+
+- Default timezone is `Pacific/Auckland`.
+- Preserve Auckland daylight-saving behavior by using timezone-aware datetimes.
+- GitHub Actions should run at candidate UTC hours for both NZST and NZDT.
+- The application must infer the actual slot from Auckland local time and exit cleanly when a candidate cron run does not match morning, noon, or evening.
+- Keep `DIGEST_SLOT` available for manual runs.
+
 ## Security Rules
 
 - Never commit real secrets, real recipient emails, real Notion database IDs, real Notion URLs, or private wisdom content.
 - Keep `.env` local and ignored; commit only placeholder values in `.env.example`.
 - Default local examples to `DRY_RUN=true`.
+- Default `WRITE_DRY_RUN_LOGS=false`; dry-run logs must not affect production selection by default.
 - Mask recipient emails in logs and delivery logs.
 - Do not log API keys, app passwords, full Notion API responses, or full production email bodies.
 - Use synthetic fixtures only.
