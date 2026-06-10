@@ -50,7 +50,8 @@ Keep changes scoped to the current phase unless the user explicitly asks to comb
 - Use Jinja2 for `src/templates/digest.html`.
 - Use pytest for tests.
 - Keep tests offline by default; mock Notion and SMTP.
-- Add dependencies only when they directly support V1. Likely dependencies: `notion-client`, `jinja2`, `python-dotenv`, `pytest`, and optionally `ruff`.
+- Use `uv` as the dependency manager. Keep `pyproject.toml` and `uv.lock` as the source of truth.
+- Add dependencies only when they directly support V1. Runtime dependencies should stay limited to `notion-client`, `jinja2`, and `python-dotenv` unless the spec changes. Dev dependencies should stay limited to `pytest` and `ruff` for now.
 
 ## Scheduling Rules
 
@@ -75,7 +76,8 @@ Keep changes scoped to the current phase unless the user explicitly asks to comb
 
 Before finishing implementation work:
 
-- Run relevant tests when a test suite exists.
+- Run `uv run pytest` when a test suite exists.
+- Run `uv run ruff check .` for Python changes.
 - Confirm `.env` and credential files remain ignored.
 - Check that fixtures and docs contain only synthetic emails, IDs, and content.
 - Verify dry-run behavior before any real send path.

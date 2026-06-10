@@ -42,7 +42,8 @@ Use docs/v1-build-spec.md as the source of truth.
 
 Create:
 - Python src package structure
-- requirements.txt
+- pyproject.toml
+- uv.lock
 - .env.example if missing
 - .gitignore if missing
 - README skeleton if missing
@@ -50,6 +51,7 @@ Create:
 - GitHub Actions workflow skeleton
 - basic test directory
 
+Use `uv` for dependency management.
 Do not implement external AI sourcing.
 Do not add real secrets, real emails, real Notion IDs, or real user data.
 Do not implement a web UI.

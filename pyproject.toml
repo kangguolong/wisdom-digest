@@ -1,0 +1,36 @@
+[project]
+name = "wisdom-digest"
+version = "0.1.0"
+description = "Lightweight personal wisdom delivery system."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "jinja2",
+    "notion-client",
+    "python-dotenv",
+]
+
+[project.scripts]
+wisdom-digest = "wisdom_digest.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests"]
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

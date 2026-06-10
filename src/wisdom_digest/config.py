@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
-
 DEFAULT_TIMEZONE = "Pacific/Auckland"
 DEFAULT_DRY_RUN = True
 DEFAULT_WRITE_DRY_RUN_LOGS = False

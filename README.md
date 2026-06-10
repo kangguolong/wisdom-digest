@@ -74,6 +74,27 @@ Start here:
 
 ## Environment
 
+This project uses Python 3.11 and `uv` for dependency management.
+
+Install dependencies:
+
+```bash
+uv sync --dev
+```
+
+Run tests and lint:
+
+```bash
+uv run pytest
+uv run ruff check .
+```
+
+Run the local skeleton entrypoint:
+
+```bash
+uv run wisdom-digest
+```
+
 Copy `.env.example` to `.env` for local development.
 
 ```bash

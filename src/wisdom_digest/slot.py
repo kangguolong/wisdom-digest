@@ -7,7 +7,6 @@ from datetime import time
 from wisdom_digest.config import DEFAULT_TIMEZONE
 from wisdom_digest.models import Slot
 
-
 SLOT_TIMES = {
     Slot.MORNING: time(hour=9),
     Slot.NOON: time(hour=13),

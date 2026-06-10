@@ -4,16 +4,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 
-class Slot(str, Enum):
+class Slot(StrEnum):
     MORNING = "morning"
     NOON = "noon"
     EVENING = "evening"
 
 
-class DeliveryStatus(str, Enum):
+class DeliveryStatus(StrEnum):
     SENT = "sent"
     FAILED = "failed"
     DRY_RUN = "dry_run"
