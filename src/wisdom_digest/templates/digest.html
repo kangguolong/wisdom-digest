@@ -1,8 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-  <body style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;">
+  <body style="margin:0;padding:0;background:#f6f4ef;font-family:Arial,Helvetica,sans-serif;">
     <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
-      <p>Wisdom Digest template placeholder.</p>
+      <div style="background:#ffffff;border-radius:16px;padding:32px;border:1px solid #e8e2d8;">
+        <p style="font-size:13px;letter-spacing:0.03em;color:#8a7f70;margin:0 0 16px;">
+          Wisdom Digest · {{ slot_label }} · {{ send_date }}
+        </p>
+
+        <div style="font-size:24px;line-height:1.45;color:#222222;margin-bottom:24px;">
+          {{ wisdom_text }}
+        </div>
+
+        {% if author or source %}
+        <p style="font-size:14px;line-height:1.5;color:#6f675d;margin:0 0 24px;">
+          {% if author %}- {{ author }}{% endif %}{% if source %}{% if author %}, {% endif %}{{ source }}{% endif %}
+        </p>
+        {% endif %}
+
+        {% if category %}
+        <p style="font-size:13px;color:#8a7f70;margin:0 0 24px;">
+          Category: {{ category }}
+        </p>
+        {% endif %}
+
+        {% if tags %}
+        <p style="font-size:13px;color:#8a7f70;margin:0 0 24px;">
+          Tags: {{ tags | join(", ") }}
+        </p>
+        {% endif %}
+
+        <div style="border-top:1px solid #eeeeee;padding-top:20px;">
+          <p style="font-size:13px;letter-spacing:0.03em;color:#8a7f70;margin:0 0 8px;">
+            Reflection
+          </p>
+          <p style="font-size:16px;line-height:1.6;color:#333333;margin:0;">
+            {{ reflection_prompt }}
+          </p>
+        </div>
+      </div>
+
+      <p style="text-align:center;font-size:12px;color:#aaaaaa;margin-top:20px;">
+        {{ footer_text }}
+      </p>
     </div>
   </body>
 </html>
