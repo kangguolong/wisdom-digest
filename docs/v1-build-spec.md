@@ -158,6 +158,8 @@ Each email must include:
 
 Detailed requirements are defined in `docs/email-template-spec.md`.
 
+The email sender should return a simple send result status so the main workflow can record `sent`, `failed`, or `dry_run` delivery outcomes without duplicating provider logic.
+
 ## 10. Security Requirements
 
 Security is a first-class V1 requirement because the repository may become public.
@@ -181,17 +183,18 @@ Detailed rules are defined in `docs/security-model.md`.
 
 ```text
 src/
-  __init__.py
-  main.py
-  config.py
-  models.py
-  notion_client.py
-  selector.py
-  email_sender.py
-  slot.py
-  logging_utils.py
-  templates/
-    digest.html
+  wisdom_digest/
+    __init__.py
+    main.py
+    config.py
+    models.py
+    notion_client.py
+    selector.py
+    email_sender.py
+    slot.py
+    logging_utils.py
+    templates/
+      digest.html
 ```
 
 ## 12. Testing Requirements

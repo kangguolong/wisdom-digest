@@ -47,7 +47,7 @@ Keep changes scoped to the current phase unless the user explicitly asks to comb
 - Use Python for the runtime.
 - Prefer a small package under `src/`.
 - Keep module responsibilities narrow: `config`, `models`, `selector`, `notion_client`, `email_sender`, `slot`, `logging_utils`, and `main`.
-- Use Jinja2 for `src/templates/digest.html`.
+- Use Jinja2 for `src/wisdom_digest/templates/digest.html`.
 - Use pytest for tests.
 - Keep tests offline by default; mock Notion and SMTP.
 - Use `uv` as the dependency manager. Keep `pyproject.toml` and `uv.lock` as the source of truth.
@@ -81,4 +81,5 @@ Before finishing implementation work:
 - Confirm `.env` and credential files remain ignored.
 - Check that fixtures and docs contain only synthetic emails, IDs, and content.
 - Verify dry-run behavior before any real send path.
+- Reuse the existing `GmailSmtpEmailProvider` and `SendResult` for email workflow integration; do not add a second email abstraction unless the spec changes.
 - Keep summaries explicit about any tests not run.

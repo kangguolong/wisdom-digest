@@ -89,11 +89,18 @@ uv run pytest
 uv run ruff check .
 ```
 
-Run the local skeleton entrypoint:
+Run the local entrypoint:
 
 ```bash
 uv run wisdom-digest
 ```
+
+Current implementation status:
+
+- Deterministic selection engine is implemented.
+- Notion client parsing and delivery-log payload building are implemented.
+- Email rendering and Gmail SMTP provider are implemented.
+- Main workflow orchestration is the next implementation phase.
 
 Copy `.env.example` to `.env` for local development.
 

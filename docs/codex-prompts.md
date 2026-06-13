@@ -151,7 +151,8 @@ Requirements:
 - Query active recipients.
 - Select one item per eligible recipient.
 - Render email.
-- Send email unless DRY_RUN=true.
+- Send email unless DRY_RUN=true using the existing `GmailSmtpEmailProvider`.
+- Use the existing `SendResult` status for delivery-log decisions; do not create a second email result abstraction.
 - Write delivery log with sent or failed status. Dry-run logs are written only when WRITE_DRY_RUN_LOGS=true.
 - Ensure GitHub Actions runs at DST-safe candidate UTC times:
   - `0 20,21 * * *` for 09:00 Pacific/Auckland

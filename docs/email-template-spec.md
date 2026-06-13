@@ -75,13 +75,14 @@ body
 The implementation should use Jinja2 and store the template at:
 
 ```text
-src/templates/digest.html
+src/wisdom_digest/templates/digest.html
 ```
 
 Template rules:
 
 - Use inline CSS for email client compatibility.
 - Escape all variables by default.
+- Load the template from the `wisdom_digest/templates` package path.
 - Do not inject raw HTML from Notion fields.
 - Do not include external images.
 - Do not include remote CSS.
