@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 
+from dotenv import load_dotenv
+
 DEFAULT_TIMEZONE = "Pacific/Auckland"
 DEFAULT_DRY_RUN = True
 DEFAULT_WRITE_DRY_RUN_LOGS = False
@@ -59,8 +61,14 @@ class Settings:
         return tuple(name for name in REQUIRED_SECRET_NAMES if not values[name])
 
 
-def load_settings(validate_required: bool = False) -> Settings:
+def load_settings(
+    validate_required: bool = False,
+    load_dotenv_file: bool = True,
+) -> Settings:
     """Load settings from environment variables."""
+    if load_dotenv_file:
+        load_dotenv()
+
     settings = Settings(
         notion_api_key=os.getenv("NOTION_API_KEY"),
         notion_wisdom_database_id=os.getenv("NOTION_WISDOM_DATABASE_ID"),

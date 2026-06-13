@@ -13,7 +13,7 @@ def test_config_defaults_are_safe():
     }
 
     with patch.dict("os.environ", clear_env, clear=True):
-        settings = load_settings()
+        settings = load_settings(load_dotenv_file=False)
 
     assert settings.default_timezone == "Pacific/Auckland"
     assert settings.dry_run is True

@@ -6,20 +6,17 @@ import logging
 
 from wisdom_digest.config import load_settings
 from wisdom_digest.logging_utils import configure_logging
+from wisdom_digest.workflow import run_digest
 
 LOGGER = logging.getLogger(__name__)
 
 
 def main() -> int:
-    """Load configuration and exit without external side effects in Phase 1."""
+    """Run the Wisdom Digest workflow."""
     settings = load_settings(validate_required=False)
     configure_logging(settings.log_level)
-    LOGGER.info(
-        "Wisdom Digest skeleton loaded timezone=%s dry_run=%s write_dry_run_logs=%s",
-        settings.default_timezone,
-        settings.dry_run,
-        settings.write_dry_run_logs,
-    )
+    result = run_digest(settings)
+    LOGGER.info("Wisdom Digest completed result=%s", result)
     return 0
 
 

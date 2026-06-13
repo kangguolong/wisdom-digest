@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import time
+from datetime import datetime, time
+from zoneinfo import ZoneInfo
 
 from wisdom_digest.config import DEFAULT_TIMEZONE
 from wisdom_digest.models import Slot
@@ -25,10 +26,16 @@ def normalize_slot(value: str) -> Slot:
     return Slot(value.strip().lower())
 
 
-def infer_current_slot(timezone_name: str = DEFAULT_TIMEZONE) -> Slot | None:
-    """Infer the current slot.
+def infer_current_slot(
+    timezone_name: str = DEFAULT_TIMEZONE,
+    now: datetime | None = None,
+) -> Slot | None:
+    """Infer the slot from the current local time in the configured timezone."""
+    reference_time = now or datetime.now(tz=ZoneInfo(timezone_name))
+    local_time = reference_time.astimezone(ZoneInfo(timezone_name))
 
-    Full Auckland-aware slot inference is implemented in Phase 5.
-    """
-    _ = timezone_name
-    raise NotImplementedError("Slot inference is implemented in Phase 5.")
+    for slot, slot_time in SLOT_TIMES.items():
+        if local_time.hour == slot_time.hour and local_time.minute == slot_time.minute:
+            return slot
+
+    return None
