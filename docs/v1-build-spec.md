@@ -116,6 +116,8 @@ Rules:
 - No real API keys, passwords, Notion IDs, or recipient emails may be committed.
 - `DRY_RUN` should default to `true` in local examples.
 - `WRITE_DRY_RUN_LOGS` should default to `false` so dry-run tests do not affect production selection history.
+- Scheduled GitHub Actions production runs may set `DRY_RUN=false` after secrets, Notion data, and a controlled real send are validated.
+- Manual GitHub Actions runs should default to dry-run and require an explicit `dry_run=false` choice for real sends.
 
 ## 7. Data Model Summary
 

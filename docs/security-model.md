@@ -56,6 +56,7 @@ GitHub Actions:
 - Use GitHub Secrets for secrets.
 - Do not echo secrets.
 - Do not print full environment variables.
+- Scheduled production runs use `DRY_RUN=false`; manual dispatch runs should default to `DRY_RUN=true`.
 
 ## 4. GitHub Actions Security
 
@@ -63,7 +64,8 @@ Workflow rules:
 
 - Use least necessary permissions.
 - Avoid printing full payloads.
-- Use `DRY_RUN=true` for manual test runs until explicitly changed.
+- Keep manual `workflow_dispatch` runs defaulted to `DRY_RUN=true` for test runs.
+- Scheduled production runs may use `DRY_RUN=false` after a controlled real send has been validated.
 - Keep `WRITE_DRY_RUN_LOGS=false` unless dry-run audit records are intentionally needed.
 - Use Node 24-compatible action versions and pin immutable third-party action tags where required, e.g. `actions/checkout@v6`, `actions/setup-python@v6`, and `astral-sh/setup-uv@v8.2.0`.
 - Do not upload artifacts containing logs with private data.

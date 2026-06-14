@@ -36,7 +36,7 @@ jobs:
       GMAIL_USER: ${{ secrets.GMAIL_USER }}
       GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
       DEFAULT_TIMEZONE: Pacific/Auckland
-      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.dry_run) || 'true' }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.dry_run) || 'false' }}
       WRITE_DRY_RUN_LOGS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.write_dry_run_logs) || 'false' }}
       DIGEST_SLOT: ${{ github.event_name == 'workflow_dispatch' && inputs.digest_slot || '' }}
       LOG_LEVEL: INFO

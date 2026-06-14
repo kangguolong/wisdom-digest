@@ -103,7 +103,8 @@ Current implementation status:
 - Main workflow orchestration and GitHub Actions automation are implemented.
 - Local Notion dry-run, GitHub Actions dry-run, and controlled Gmail real send are validated.
 - Prompt 7 security and maintainability review has passed.
-- Remaining operational steps are visual validation of the redesigned template and carefully enabling scheduled real sends.
+- Scheduled GitHub Actions runs are production-enabled and send real emails when a local slot matches.
+- Manual GitHub Actions runs still default to dry-run unless `dry_run=false` is selected.
 
 Copy `.env.example` to `.env` for local development.
 
@@ -129,11 +130,19 @@ For GitHub Actions, configure these as GitHub Secrets.
 ## Safety Defaults
 
 - `DRY_RUN=true` should be used for local setup and first test runs.
+- Scheduled GitHub Actions production runs use `DRY_RUN=false`.
+- Manual GitHub Actions runs default to `dry_run=true` and should be used for test runs.
 - `WRITE_DRY_RUN_LOGS=false` should be the default so local tests do not affect production selection history.
 - Real recipient emails should live only in Notion, not in the repository.
 - Real Notion database IDs should live only in local `.env` or GitHub Secrets.
 - Logs should mask recipient emails.
 - Tests should use synthetic data only.
+
+## Production Operation
+
+Scheduled production runs use the Auckland DST-safe cron entries above and send real emails only when the application infers a matching local slot. Keep `WRITE_DRY_RUN_LOGS=false` unless dry-run audit records are intentionally needed.
+
+Before expanding recipients, confirm each active Notion recipient has the intended email, frequency, preference tags, and excluded tags. To pause delivery for someone, set their Notion recipient `Status` to `paused`.
 
 ## Implementation Workflow
 
