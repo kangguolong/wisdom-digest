@@ -101,7 +101,9 @@ Current implementation status:
 - Notion client parsing and delivery-log payload building are implemented.
 - Email rendering and Gmail SMTP provider are implemented.
 - Main workflow orchestration and GitHub Actions automation are implemented.
-- Next steps are local dry-run validation, GitHub Secrets setup, and security review.
+- Local Notion dry-run and GitHub Actions dry-run are validated.
+- Prompt 7 security and maintainability review has passed.
+- Remaining operational steps are Gmail setup and one controlled real send to yourself.
 
 Copy `.env.example` to `.env` for local development.
 
