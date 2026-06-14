@@ -2,7 +2,7 @@
 
 Wisdom Digest is a lightweight personal wisdom delivery system.
 
-It stores curated wisdom items in Notion, selects relevant items for active recipients, sends a clean HTML email through Gmail, and records delivery history back to Notion.
+It stores curated wisdom items in Notion, selects relevant items for active recipients, sends a calm editorial HTML email through Gmail, and records delivery history back to Notion.
 
 The project is designed for a small trusted group, such as the maintainer, spouse, and invited friends. It is not a SaaS product.
 
@@ -32,7 +32,7 @@ V1 includes:
 - Recipient-level subscription slots.
 - Morning, noon, and evening scheduled sends.
 - Deterministic selection logic.
-- HTML email with plain-text fallback.
+- Editorial calm HTML email with plain-text fallback.
 - Gmail SMTP delivery.
 - Dry-run mode.
 - Delivery logs.
@@ -99,11 +99,11 @@ Current implementation status:
 
 - Deterministic selection engine is implemented.
 - Notion client parsing and delivery-log payload building are implemented.
-- Email rendering and Gmail SMTP provider are implemented.
+- Editorial calm email rendering and Gmail SMTP provider are implemented.
 - Main workflow orchestration and GitHub Actions automation are implemented.
-- Local Notion dry-run and GitHub Actions dry-run are validated.
+- Local Notion dry-run, GitHub Actions dry-run, and controlled Gmail real send are validated.
 - Prompt 7 security and maintainability review has passed.
-- Remaining operational steps are Gmail setup and one controlled real send to yourself.
+- Remaining operational steps are visual validation of the redesigned template and carefully enabling scheduled real sends.
 
 Copy `.env.example` to `.env` for local development.
 

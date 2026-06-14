@@ -17,7 +17,7 @@ Wisdom Digest V1 is a small personal automation:
 
 - Read curated wisdom items, recipients, and delivery logs from Notion.
 - Select one eligible wisdom item per active subscribed recipient.
-- Render calm HTML email with a plain-text fallback.
+- Render editorial calm HTML email with a plain-text fallback.
 - Send through Gmail SMTP with an app password.
 - Record delivery attempts back to Notion.
 - Run locally and through GitHub Actions cron/manual dispatch.
@@ -48,6 +48,7 @@ Keep changes scoped to the current phase unless the user explicitly asks to comb
 - Prefer a small package under `src/`.
 - Keep module responsibilities narrow: `config`, `models`, `selector`, `notion_client`, `email_sender`, `slot`, `logging_utils`, and `main`.
 - Use Jinja2 for `src/wisdom_digest/templates/digest.html`.
+- Preserve the approved Editorial Calm email direction: warm reading-card layout, quiet header, subtle metadata chips, and no marketing-newsletter styling.
 - Use pytest for tests.
 - Keep tests offline by default; mock Notion and SMTP.
 - Use `uv` as the dependency manager. Keep `pyproject.toml` and `uv.lock` as the source of truth.

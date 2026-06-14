@@ -11,6 +11,7 @@ It should not look like a marketing newsletter.
 Design principles:
 
 - Minimal.
+- Editorial calm: refined reading-card layout, not a product newsletter.
 - Mobile-friendly.
 - HTML first, plain-text fallback required.
 - No tracking pixels.
@@ -62,10 +63,11 @@ Recommended structure:
 body
   outer container
     card
-      meta label
-      wisdom text
+      header with brand and slot/date
+      short accent divider
+      wisdom text as the visual focus
       attribution
-      category/tags metadata
+      category/tags metadata chips
       reflection section
     footer
 ```
@@ -90,47 +92,69 @@ Template rules:
 - Do not include tracking links.
 - Keep width around 640px.
 - Use readable font stack such as Arial, Helvetica, sans-serif.
+- Use email-safe table layout where needed for horizontal header alignment.
+- Render category and tags as subtle inline chips when present.
 
 ## 6. Suggested HTML Template
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <body style="margin:0;padding:0;background:#f6f4ef;font-family:Arial,Helvetica,sans-serif;">
-    <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
-      <div style="background:#ffffff;border-radius:16px;padding:32px;border:1px solid #e8e2d8;">
-        <p style="font-size:13px;letter-spacing:0.03em;color:#8a7f70;margin:0 0 16px;">
-          Wisdom Digest · {{ slot_label }} · {{ send_date }}
-        </p>
+  <body style="margin:0;padding:0;background:#f7f5f0;font-family:Arial,Helvetica,sans-serif;">
+    <div style="max-width:620px;margin:0 auto;padding:28px 18px;">
+      <div style="background:#fffdf8;border-radius:14px;padding:34px 34px 30px;border:1px solid #e6dfd3;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+          <tr>
+            <td style="font-size:13px;line-height:1.4;font-weight:700;color:#7b7165;margin:0;">
+              Wisdom Digest
+            </td>
+            <td align="right" style="font-size:13px;line-height:1.4;color:#9a9185;margin:0;">
+              {{ slot_label }} · {{ send_date }}
+            </td>
+          </tr>
+        </table>
 
-        <div style="font-size:24px;line-height:1.45;color:#222222;margin-bottom:24px;">
+        <div style="width:28px;height:2px;background:#b89b68;margin:28px 0 26px;font-size:0;line-height:0;">
+          &nbsp;
+        </div>
+
+        <div style="font-size:28px;line-height:1.38;color:#252321;font-weight:600;margin:0;">
           {{ wisdom_text }}
         </div>
 
         {% if author or source %}
-        <p style="font-size:14px;line-height:1.5;color:#6f675d;margin:0 0 24px;">
-          {% if author %}— {{ author }}{% endif %}{% if source %}{% if author %}, {% endif %}{{ source }}{% endif %}
+        <p style="font-size:14px;line-height:1.6;color:#776f66;margin:22px 0 0;">
+          {% if author %}- {{ author }}{% endif %}{% if source %}{% if author %}, {% endif %}{{ source }}{% endif %}
         </p>
         {% endif %}
 
-        {% if category %}
-        <p style="font-size:13px;color:#8a7f70;margin:0 0 24px;">
-          Category: {{ category }}
-        </p>
+        {% if category or tags %}
+        <div style="margin-top:24px;">
+          {% if category %}
+          <span style="display:inline-block;font-size:12px;line-height:1.3;color:#7c7164;background:#f1ece3;border:1px solid #e4dccf;border-radius:999px;padding:5px 9px;margin:0 6px 6px 0;">
+            {{ category }}
+          </span>
+          {% endif %}
+          {% for tag in tags %}
+          <span style="display:inline-block;font-size:12px;line-height:1.3;color:#7c7164;background:#f1ece3;border:1px solid #e4dccf;border-radius:999px;padding:5px 9px;margin:0 6px 6px 0;">
+            {{ tag }}
+          </span>
+          {% endfor %}
+        </div>
         {% endif %}
 
-        <div style="border-top:1px solid #eeeeee;padding-top:20px;">
-          <p style="font-size:13px;letter-spacing:0.03em;color:#8a7f70;margin:0 0 8px;">
+        <div style="border-top:1px solid #ebe5dc;margin-top:30px;padding-top:24px;">
+          <p style="font-size:12px;line-height:1.4;letter-spacing:0.08em;text-transform:uppercase;color:#9a9185;margin:0 0 10px;">
             Reflection
           </p>
-          <p style="font-size:16px;line-height:1.6;color:#333333;margin:0;">
+          <p style="font-size:18px;line-height:1.55;color:#2f2d2a;margin:0;">
             {{ reflection_prompt }}
           </p>
         </div>
       </div>
 
-      <p style="text-align:center;font-size:12px;color:#aaaaaa;margin-top:20px;">
-        Sent by Wisdom Digest
+      <p style="text-align:center;font-size:12px;line-height:1.5;color:#aaa39a;margin:18px 0 0;">
+        {{ footer_text }}
       </p>
     </div>
   </body>
@@ -187,4 +211,5 @@ Template tests should verify:
 - Missing optional fields do not break rendering.
 - Plain-text fallback renders.
 - User-provided content is escaped.
+- Category and tags render as subtle metadata chips.
 - No external image or script tags are introduced.

@@ -4,6 +4,11 @@ Use this document to drive Codex implementation in controlled phases.
 
 General rule: Codex should treat `docs/v1-build-spec.md` as the source of truth.
 
+Current V1 implementation note: repository skeleton, selection, Notion integration,
+email rendering/Gmail SMTP, workflow orchestration, GitHub Actions, and the
+security review have been implemented. Future prompts should refine or operate
+the existing modules instead of creating parallel abstractions.
+
 ## Prompt 1: Planning Only
 
 ```text
@@ -126,6 +131,7 @@ Use docs/email-template-spec.md and docs/v1-build-spec.md as the source of truth
 
 Requirements:
 - Use Jinja2 for HTML template rendering.
+- Preserve the approved Editorial Calm design direction from docs/email-template-spec.md.
 - Include plain-text fallback.
 - Use Gmail SMTP with app password from environment variables.
 - Support DRY_RUN mode.

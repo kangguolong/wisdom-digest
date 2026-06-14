@@ -65,7 +65,7 @@ Workflow rules:
 - Avoid printing full payloads.
 - Use `DRY_RUN=true` for manual test runs until explicitly changed.
 - Keep `WRITE_DRY_RUN_LOGS=false` unless dry-run audit records are intentionally needed.
-- Use pinned major versions for official actions where practical, e.g. `actions/checkout@v4`.
+- Use Node 24-compatible action versions and pin immutable third-party action tags where required, e.g. `actions/checkout@v6`, `actions/setup-python@v6`, and `astral-sh/setup-uv@v8.2.0`.
 - Do not upload artifacts containing logs with private data.
 
 Recommended workflow permissions:

@@ -54,11 +54,15 @@ def test_render_digest_includes_html_and_text_content():
     )
 
     assert rendered.subject == "Wisdom Digest · Morning · 2026-06-12"
+    assert "<table" in rendered.html_body
+    assert "Morning · 2026-06-12" in rendered.html_body
     assert "Notice the useful constraint." in rendered.html_body
     assert "Synthetic Author" in rendered.html_body
     assert "Synthetic Source" in rendered.html_body
-    assert "Category: Practice" in rendered.html_body
-    assert "Tags: discipline, judgment" in rendered.html_body
+    assert "Practice" in rendered.html_body
+    assert "discipline" in rendered.html_body
+    assert "judgment" in rendered.html_body
+    assert "border-radius:999px" in rendered.html_body
     assert "Reflection" in rendered.html_body
     assert "What can I improve today?" in rendered.text_body
     assert "Sent by Wisdom Digest" in rendered.text_body
@@ -82,6 +86,7 @@ def test_render_digest_handles_missing_optional_fields():
     assert DEFAULT_REFLECTION_PROMPT in rendered.text_body
     assert "Category:" not in rendered.text_body
     assert "Tags:" not in rendered.text_body
+    assert "border-radius:999px" not in rendered.html_body
 
 
 def test_render_digest_escapes_user_provided_html():
@@ -95,6 +100,10 @@ def test_render_digest_escapes_user_provided_html():
     assert "<script>" not in rendered.html_body
     assert "&lt;script&gt;" in rendered.html_body
     assert "<img" not in rendered.html_body
+    assert "<link" not in rendered.html_body
+    assert "href=" not in rendered.html_body
+    assert "http://" not in rendered.html_body.lower()
+    assert "https://" not in rendered.html_body.lower()
     assert "javascript:" not in rendered.html_body.lower()
 
 
