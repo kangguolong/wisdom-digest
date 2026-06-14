@@ -100,7 +100,8 @@ Current implementation status:
 - Deterministic selection engine is implemented.
 - Notion client parsing and delivery-log payload building are implemented.
 - Email rendering and Gmail SMTP provider are implemented.
-- Main workflow orchestration is the next implementation phase.
+- Main workflow orchestration and GitHub Actions automation are implemented.
+- Next steps are local dry-run validation, GitHub Secrets setup, and security review.
 
 Copy `.env.example` to `.env` for local development.
 

@@ -169,10 +169,8 @@ def _process_selection(
     status = send_result.status
 
     LOGGER.info(
-        "Digest processed recipient_id=%s email=%s wisdom_item_id=%s status=%s",
-        recipient.id,
+        "Digest processed recipient=%s status=%s",
         mask_email(recipient.email),
-        wisdom_item.id,
         status,
     )
 
