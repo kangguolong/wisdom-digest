@@ -36,22 +36,21 @@ jobs:
       GMAIL_USER: ${{ secrets.GMAIL_USER }}
       GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
       DEFAULT_TIMEZONE: Pacific/Auckland
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.dry_run) || 'true' }}
       WRITE_DRY_RUN_LOGS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', inputs.write_dry_run_logs) || 'false' }}
       DIGEST_SLOT: ${{ github.event_name == 'workflow_dispatch' && inputs.digest_slot || '' }}
       LOG_LEVEL: INFO
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version-file: ".python-version"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v8
         with:
           enable-cache: true
 
