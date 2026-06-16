@@ -30,12 +30,12 @@ def infer_current_slot(
     timezone_name: str = DEFAULT_TIMEZONE,
     now: datetime | None = None,
 ) -> Slot | None:
-    """Infer the slot from the current local time in the configured timezone."""
+    """Infer the slot from the current local hour in the configured timezone."""
     reference_time = now or datetime.now(tz=ZoneInfo(timezone_name))
     local_time = reference_time.astimezone(ZoneInfo(timezone_name))
 
     for slot, slot_time in SLOT_TIMES.items():
-        if local_time.hour == slot_time.hour and local_time.minute == slot_time.minute:
+        if local_time.hour == slot_time.hour:
             return slot
 
     return None

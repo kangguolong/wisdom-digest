@@ -82,6 +82,10 @@ GitHub Actions cron runs in UTC. Because Auckland switches between NZST and NZDT
 1. an explicit `DIGEST_SLOT` environment variable; or
 2. automatic slot inference from the current `Pacific/Auckland` local time.
 
+Automatic slot inference uses a one-hour local window for each slot, not an
+exact minute match. For example, `09:00:00` through before `10:00:00`
+`Pacific/Auckland` resolves to `morning`.
+
 Candidate cron runs that do not map to a real local slot must exit cleanly without sending email or writing delivery logs.
 
 Manual runs through `workflow_dispatch` should support setting `DIGEST_SLOT` when possible.

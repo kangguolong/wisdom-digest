@@ -25,6 +25,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: wisdom-digest-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   digest:
     runs-on: ubuntu-latest

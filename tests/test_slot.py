@@ -67,5 +67,39 @@ def test_infer_current_slot_handles_nzdt_candidate_times():
     )
 
 
+def test_infer_current_slot_allows_delayed_run_inside_slot_hour():
+    assert (
+        infer_current_slot(
+            now=datetime(2026, 6, 15, 21, 56, 21, tzinfo=UTC),
+        )
+        is Slot.MORNING
+    )
+
+
+def test_infer_current_slot_accepts_start_and_end_of_local_slot_hour():
+    assert (
+        infer_current_slot(now=datetime(2026, 6, 15, 21, 0, tzinfo=UTC))
+        is Slot.MORNING
+    )
+    assert (
+        infer_current_slot(now=datetime(2026, 6, 15, 21, 59, tzinfo=UTC))
+        is Slot.MORNING
+    )
+    assert (
+        infer_current_slot(now=datetime(2026, 6, 16, 1, 59, tzinfo=UTC))
+        is Slot.NOON
+    )
+    assert (
+        infer_current_slot(now=datetime(2026, 6, 16, 6, 59, tzinfo=UTC))
+        is Slot.EVENING
+    )
+
+
+def test_infer_current_slot_rejects_first_minute_after_slot_hour():
+    assert infer_current_slot(now=datetime(2026, 6, 15, 22, 0, tzinfo=UTC)) is None
+    assert infer_current_slot(now=datetime(2026, 6, 16, 2, 0, tzinfo=UTC)) is None
+    assert infer_current_slot(now=datetime(2026, 6, 16, 7, 0, tzinfo=UTC)) is None
+
+
 def test_infer_current_slot_returns_none_for_non_slot_time():
     assert infer_current_slot(now=datetime(2026, 6, 13, 2, 0, tzinfo=UTC)) is None

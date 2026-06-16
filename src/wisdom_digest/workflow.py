@@ -82,8 +82,15 @@ def run_digest(
     wisdom_items = gateway.fetch_wisdom_items()
     recipients = gateway.fetch_recipients()
     delivery_logs = gateway.fetch_recent_delivery_logs()
-    selections = select_items_for_recipients(
+    eligible_recipients = _recipients_without_same_slot_sent_log(
         recipients=recipients,
+        delivery_logs=delivery_logs,
+        slot=slot,
+        run_time=run_time,
+        timezone_name=settings.default_timezone,
+    )
+    selections = select_items_for_recipients(
+        recipients=eligible_recipients,
         wisdom_items=wisdom_items,
         delivery_logs=delivery_logs,
         current_slot=slot.value,
@@ -145,6 +152,42 @@ class _WorkflowCounters:
     failed_count: int = 0
     dry_run_count: int = 0
     delivery_logs_written: int = 0
+
+
+def _recipients_without_same_slot_sent_log(
+    recipients: list[Recipient],
+    delivery_logs: list[DeliveryLog],
+    slot: Slot,
+    run_time: datetime,
+    timezone_name: str,
+) -> list[Recipient]:
+    timezone = ZoneInfo(timezone_name)
+    run_date = run_time.astimezone(timezone).date()
+    recipient_ids_with_sent_log = {
+        log.recipient_id
+        for log in delivery_logs
+        if log.status == DeliveryStatus.SENT.value
+        and log.slot == slot.value
+        and _as_aware_utc(log.sent_at).astimezone(timezone).date() == run_date
+    }
+
+    if not recipient_ids_with_sent_log:
+        return recipients
+
+    eligible_recipients = []
+    for recipient in recipients:
+        if recipient.id in recipient_ids_with_sent_log:
+            LOGGER.info(
+                "Skipping recipient with existing sent delivery log "
+                "recipient=%s slot=%s date=%s",
+                mask_email(recipient.email),
+                slot.value,
+                run_date.isoformat(),
+            )
+            continue
+        eligible_recipients.append(recipient)
+
+    return eligible_recipients
 
 
 def _process_selection(

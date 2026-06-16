@@ -53,6 +53,23 @@ def wisdom_item() -> WisdomItem:
     )
 
 
+def delivery_log(
+    *,
+    recipient_id: str = "recipient-1",
+    wisdom_item_id: str = "other-item",
+    sent_at: datetime = NOW,
+    slot: str = "morning",
+    status: str = DeliveryStatus.SENT.value,
+) -> DeliveryLog:
+    return DeliveryLog(
+        recipient_id=recipient_id,
+        wisdom_item_id=wisdom_item_id,
+        sent_at=sent_at,
+        slot=slot,
+        status=status,
+    )
+
+
 class FakeGateway:
     def __init__(
         self,
@@ -144,6 +161,22 @@ def test_no_matching_slot_exits_without_external_calls():
     assert email_provider.sent == []
 
 
+def test_delayed_scheduled_run_inside_slot_hour_processes_digest():
+    gateway = FakeGateway()
+    email_provider = FakeEmailProvider(status=DeliveryStatus.DRY_RUN.value)
+
+    result = run_digest(
+        settings(digest_slot=None),
+        now=datetime(2026, 6, 15, 21, 56, 21, tzinfo=UTC),
+        notion_gateway=gateway,
+        email_provider=email_provider,
+    )
+
+    assert result.slot == "morning"
+    assert result.selections_count == 1
+    assert len(email_provider.sent) == 1
+
+
 def test_dry_run_processes_selection_without_writing_logs_by_default():
     gateway = FakeGateway()
     email_provider = FakeEmailProvider(status=DeliveryStatus.DRY_RUN.value)
@@ -201,6 +234,42 @@ def test_sent_and_failed_results_write_delivery_logs():
     assert sent_gateway.written_logs[0].status == DeliveryStatus.SENT.value
     assert failed_result.failed_count == 1
     assert failed_gateway.written_logs[0].status == DeliveryStatus.FAILED.value
+
+
+def test_same_date_same_slot_sent_log_skips_recipient_before_selection():
+    gateway = FakeGateway(delivery_logs=[delivery_log()])
+    email_provider = FakeEmailProvider(status=DeliveryStatus.SENT.value)
+
+    result = run_digest(
+        settings(dry_run=False),
+        now=NOW,
+        notion_gateway=gateway,
+        email_provider=email_provider,
+    )
+
+    assert result.slot == "morning"
+    assert result.selections_count == 0
+    assert result.sent_count == 0
+    assert email_provider.sent == []
+    assert gateway.written_logs == []
+
+
+def test_failed_and_dry_run_logs_do_not_block_same_slot_retry():
+    for status in (DeliveryStatus.FAILED.value, DeliveryStatus.DRY_RUN.value):
+        gateway = FakeGateway(delivery_logs=[delivery_log(status=status)])
+        email_provider = FakeEmailProvider(status=DeliveryStatus.SENT.value)
+
+        result = run_digest(
+            settings(dry_run=False),
+            now=NOW,
+            notion_gateway=gateway,
+            email_provider=email_provider,
+        )
+
+        assert result.selections_count == 1
+        assert result.sent_count == 1
+        assert len(email_provider.sent) == 1
+        assert len(gateway.written_logs) == 1
 
 
 def test_empty_selection_exits_cleanly():
