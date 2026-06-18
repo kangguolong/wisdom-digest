@@ -54,8 +54,11 @@ def test_render_digest_includes_html_and_text_content():
     )
 
     assert rendered.subject == "Wisdom Digest · Morning · 2026-06-12"
+    assert '<meta charset="UTF-8">' in rendered.html_body
     assert "<table" in rendered.html_body
     assert "Morning · 2026-06-12" in rendered.html_body
+    assert "Synthetic Item" in rendered.html_body
+    assert "Synthetic Item" in rendered.text_body
     assert "Notice the useful constraint." in rendered.html_body
     assert "Synthetic Author" in rendered.html_body
     assert "Synthetic Source" in rendered.html_body
@@ -63,6 +66,7 @@ def test_render_digest_includes_html_and_text_content():
     assert "discipline" in rendered.html_body
     assert "judgment" in rendered.html_body
     assert "border-radius:999px" in rendered.html_body
+    assert "Georgia,'Times New Roman',KaiTi" in rendered.html_body
     assert "Reflection" in rendered.html_body
     assert "What can I improve today?" in rendered.text_body
     assert "Sent by Wisdom Digest" in rendered.text_body
@@ -89,22 +93,61 @@ def test_render_digest_handles_missing_optional_fields():
     assert "border-radius:999px" not in rendered.html_body
 
 
+def test_render_digest_preserves_newlines_and_blank_line_paragraphs():
+    rendered = provider().render_digest(
+        recipient=recipient(),
+        wisdom_item=wisdom_item(text="First line\nSecond line\n\nNext paragraph"),
+        slot_label="Morning",
+        send_date="2026-06-12",
+    )
+
+    assert "First line<br>Second line" in rendered.html_body
+    assert "<p style=\"margin:0 0 18px;\">" in rendered.html_body
+    assert "Next paragraph" in rendered.html_body
+    assert "First line\nSecond line\n\nNext paragraph" in rendered.text_body
+
+
 def test_render_digest_escapes_user_provided_html():
     rendered = provider().render_digest(
         recipient=recipient(),
-        wisdom_item=wisdom_item(text="<script>alert('x')</script>"),
+        wisdom_item=wisdom_item(
+            title="<b>Synthetic</b>",
+            text="<script>alert('x')</script>\nPlain line",
+        ),
         slot_label="Noon",
         send_date="2026-06-12",
     )
 
     assert "<script>" not in rendered.html_body
     assert "&lt;script&gt;" in rendered.html_body
+    assert "<b>Synthetic</b>" not in rendered.html_body
+    assert "&lt;b&gt;Synthetic&lt;/b&gt;" in rendered.html_body
     assert "<img" not in rendered.html_body
     assert "<link" not in rendered.html_body
     assert "href=" not in rendered.html_body
     assert "http://" not in rendered.html_body.lower()
     assert "https://" not in rendered.html_body.lower()
     assert "javascript:" not in rendered.html_body.lower()
+
+
+def test_render_digest_supports_chinese_content():
+    rendered = provider().render_digest(
+        recipient=recipient(),
+        wisdom_item=wisdom_item(
+            title="安静的力量",
+            text="慢慢来\n比较快",
+            reflection_prompt="今天我想留意什么？",
+        ),
+        slot_label="Morning",
+        send_date="2026-06-12",
+    )
+
+    assert "安静的力量" in rendered.html_body
+    assert "慢慢来<br>比较快" in rendered.html_body
+    assert "今天我想留意什么？" in rendered.html_body
+    assert "安静的力量" in rendered.text_body
+    assert "慢慢来\n比较快" in rendered.text_body
+    assert "今天我想留意什么？" in rendered.text_body
 
 
 def test_dry_run_send_does_not_open_smtp():

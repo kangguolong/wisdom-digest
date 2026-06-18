@@ -41,7 +41,9 @@ Wisdom Digest · Evening · 2026-06-06
 slot_label
 send_date
 recipient_name
+wisdom_title
 wisdom_text
+wisdom_paragraphs
 author
 source
 category
@@ -55,6 +57,9 @@ tags
 footer_text
 ```
 
+`wisdom_paragraphs` is derived from `wisdom_text` for HTML rendering. It should
+preserve single newlines as line breaks and blank lines as paragraph breaks.
+
 ## 4. HTML Structure
 
 Recommended structure:
@@ -65,7 +70,7 @@ body
     card
       header with brand and slot/date
       short accent divider
-      wisdom text as the visual focus
+      letter-style wisdom content block with title and preserved line breaks
       attribution
       category/tags metadata chips
       reflection section
@@ -92,14 +97,21 @@ Template rules:
 - Do not include tracking links.
 - Keep width around 640px.
 - Use readable font stack such as Arial, Helvetica, sans-serif.
+- Use a readable serif/CJK fallback stack for the wisdom content block, such as Georgia, Times New Roman, KaiTi, STKaiti, Songti SC, Noto Serif CJK SC, serif.
 - Use email-safe table layout where needed for horizontal header alignment.
 - Render category and tags as subtle inline chips when present.
+- Render the wisdom item title above the wisdom text.
+- Preserve single newlines in wisdom text as line breaks and blank lines as paragraph breaks without injecting raw HTML.
+- Include `<meta charset="UTF-8">` so Chinese and other Unicode content render correctly when supported by the recipient email client.
 
 ## 6. Suggested HTML Template
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+  </head>
   <body style="margin:0;padding:0;background:#f7f5f0;font-family:Arial,Helvetica,sans-serif;">
     <div style="max-width:620px;margin:0 auto;padding:28px 18px;">
       <div style="background:#fffdf8;border-radius:14px;padding:34px 34px 30px;border:1px solid #e6dfd3;">
@@ -118,8 +130,17 @@ Template rules:
           &nbsp;
         </div>
 
-        <div style="font-size:28px;line-height:1.38;color:#252321;font-weight:600;margin:0;">
-          {{ wisdom_text }}
+        <div style="background:#fff9ec;border:1px solid #eadfcb;border-radius:10px;padding:26px 26px 24px;margin:0;box-shadow:inset 0 0 0 1px #fffdf8;">
+          <p style="font-size:13px;line-height:1.45;letter-spacing:0.08em;text-transform:uppercase;color:#9a7f53;margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;">
+            {{ wisdom_title }}
+          </p>
+          <div style="font-size:21px;line-height:1.7;color:#2c2824;font-weight:400;margin:0;font-family:Georgia,'Times New Roman',KaiTi,STKaiti,'Songti SC','Noto Serif CJK SC',serif;">
+            {% for paragraph in wisdom_paragraphs %}
+            <p style="margin:0{% if not loop.last %} 0 18px{% endif %};">
+              {% for line in paragraph %}{{ line }}{% if not loop.last %}<br>{% endif %}{% endfor %}
+            </p>
+            {% endfor %}
+          </div>
         </div>
 
         {% if author or source %}
@@ -169,6 +190,8 @@ Suggested format:
 
 ```text
 Wisdom Digest · {Slot Label} · {YYYY-MM-DD}
+
+{wisdom_title}
 
 {wisdom_text}
 

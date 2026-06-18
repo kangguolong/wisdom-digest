@@ -112,7 +112,8 @@ class GmailSmtpEmailProvider(EmailProvider):
             "slot_label": slot_label,
             "send_date": send_date,
             "recipient_name": recipient.name,
-            "wisdom_text": wisdom_item.text,
+            "wisdom_title": wisdom_item.title,
+            "wisdom_paragraphs": _split_text_paragraphs(wisdom_item.text),
             "author": wisdom_item.author,
             "source": wisdom_item.source,
             "category": wisdom_item.category,
@@ -187,6 +188,8 @@ def _render_text_body(
     lines = [
         f"Wisdom Digest · {slot_label} · {send_date}",
         "",
+        wisdom_item.title,
+        "",
         wisdom_item.text,
         "",
     ]
@@ -203,6 +206,24 @@ def _render_text_body(
 
     lines.extend(["Reflection:", reflection_prompt, "", "Sent by Wisdom Digest"])
     return "\n".join(lines)
+
+
+def _split_text_paragraphs(text: str) -> list[list[str]]:
+    paragraphs: list[list[str]] = []
+    current_lines: list[str] = []
+
+    for line in text.replace("\r\n", "\n").replace("\r", "\n").split("\n"):
+        if line.strip():
+            current_lines.append(line)
+            continue
+        if current_lines:
+            paragraphs.append(current_lines)
+            current_lines = []
+
+    if current_lines:
+        paragraphs.append(current_lines)
+
+    return paragraphs
 
 
 def _format_attribution(wisdom_item: WisdomItem) -> str | None:
